@@ -7,9 +7,9 @@
         <param value="50MB" name="MaxFileSize"/>
         <layout class="org.apache.log4j.PatternLayout"/>
     </appender>
-    <appender class="org.apache.log4j.ConsoleAppender" name="stdout">
+    <appender class="org.apache.log4j.ConsoleAppender" name="CONSOLE">
         <layout class="org.apache.log4j.PatternLayout">
-            <param value="%-6r %d{ISO8601} %-5p [%t] %c{2} (%F:%L).%M() - %m%n" name="ConversionPattern"/>
+            <param name="ConversionPattern" value="%d %t %5p [%c:%M] - %m%n" />
         </layout>
     </appender>
     <appender class="org.apache.log4j.FileAppender" name="TextFile">
@@ -17,6 +17,13 @@
         <param value="/export/Log/copycat-example/info.log" name="File"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param value="%-6r %d{ISO8601} %-5p [%t] %c{2} (%F:%L).%M() - %m%n" name="ConversionPattern"/>
+        </layout>
+    </appender>
+    <appender name="File" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="encoding" value="utf-8" />
+        <param name="File" value="/export/Logs/copycat-example/${COPYCAT_LOGPATH}/info.log" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %t %5p [%c:%M] - %m%n" />
         </layout>
     </appender>
     <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
@@ -28,7 +35,8 @@
         <level value="info"/>
     </logger>
     <root>
-        <level value="debug"/>
-        <appender-ref ref="ASYNC"/>
+        <level value="info"/>
+        <appender-ref ref="File"/>
+        <appender-ref ref="CONSOLE" />
     </root>
 </log4j:configuration>

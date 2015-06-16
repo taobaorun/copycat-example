@@ -10,6 +10,8 @@ import net.kuujo.copycat.raft.StateMachine;
 import net.kuujo.copycat.raft.log.Log;
 import net.kuujo.copycat.raft.log.StorageLevel;
 
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * Title:<br>
@@ -54,11 +56,16 @@ public class ClusterUtil {
 
     public static Copycat buildCopycat(int localMember,int members){
         ManagedCluster managedCluster = buildCluster(localMember,members);
+
         Copycat copycat = CopycatServer.builder()
                 .withCluster(managedCluster)
+                /*.withHeartbeatInterval(5, TimeUnit.SECONDS)
+                .withKeepAliveInterval(10,TimeUnit.SECONDS)
+                .withElectionTimeout(8,TimeUnit.SECONDS)*/
+//                .withSessionTimeout(60,TimeUnit.SECONDS)
                 .withLog(Log.builder()
-                    .withStorageLevel(StorageLevel.MEMORY)
-                    .build())
+                        .withStorageLevel(StorageLevel.MEMORY)
+                        .build())
                 .build();
         return copycat;
 
