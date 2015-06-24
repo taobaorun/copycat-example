@@ -1,10 +1,12 @@
 package com.jiaxy.copycat.example.cluster;
 
 import net.kuujo.copycat.Copycat;
+import net.kuujo.copycat.CopycatClient;
 import net.kuujo.copycat.CopycatServer;
 import net.kuujo.copycat.cluster.ManagedCluster;
 import net.kuujo.copycat.cluster.NettyCluster;
 import net.kuujo.copycat.cluster.NettyMember;
+import net.kuujo.copycat.cluster.NettyMembers;
 import net.kuujo.copycat.raft.Raft;
 import net.kuujo.copycat.raft.StateMachine;
 import net.kuujo.copycat.raft.log.Log;
@@ -51,6 +53,20 @@ public class ClusterUtil {
                     .build());
         }
         return builder.build();
+    }
+
+    public static Copycat buildClientCopycat(int members) {
+        CopycatClient.Builder copycatBuilder = CopycatClient.builder();
+        NettyMembers.Builder membersBuilder = NettyMembers.builder();
+        for (int i = 1; i <= members; i++) {
+            membersBuilder.addMember(NettyMember.builder()
+                    .withId(i)
+                    .withHost("localhost")
+                    .withPort(8090 + i)
+                    .build());
+        }
+        copycatBuilder.withMembers(membersBuilder.build());
+        return copycatBuilder.build();
     }
 
 

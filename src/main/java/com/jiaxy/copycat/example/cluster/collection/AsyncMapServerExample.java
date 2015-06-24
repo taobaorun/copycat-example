@@ -9,8 +9,6 @@ import net.kuujo.copycat.collections.AsyncMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -23,25 +21,25 @@ import java.util.concurrent.ExecutionException;
  *
  * @since 2015/06/14 15:15
  */
-public class AsyncMapExample {
+public class AsyncMapServerExample {
 
-    private static Logger logger = LoggerFactory.getLogger(AsyncMapExample.class);
+    private static Logger logger = LoggerFactory.getLogger(AsyncMapServerExample.class);
 
     public static void main(String[] args) {
 
-        Copycat copycat1 = ClusterUtil.buildCopycat(ConfigUtil.getLocalMemberID(),ConfigUtil.getMemberNums());
-        logger.info("copycat "+copycat1.getClass().getCanonicalName());
-        copycat1.open().thenRun(() -> {
+        Copycat copycat = ClusterUtil.buildCopycat(ConfigUtil.getLocalMemberID(),ConfigUtil.getMemberNums());
+        logger.info("copycat " + copycat.getClass().getCanonicalName());
+        copycat.open().thenRun(() -> {
             try {
                 Thread.sleep(10000);
 
-                logger.info("------------------i am here------------------------" + copycat1.isOpen());
-                    Node node = copycat1.create("/testMap").get();
+                logger.info("------------------i am here------------------------" + copycat.isOpen());
+                    Node node = copycat.create("/testMap").get();
                     AsyncMap<String, String> map = node.create(AsyncMap.class).get();
                     map.containsKey("test_key1").whenComplete((exist,t) ->{
                         CopycatServer server = null;
-                        if ( copycat1 instanceof CopycatServer){
-                            server= (CopycatServer) copycat1;
+                        if ( copycat instanceof CopycatServer){
+                            server= (CopycatServer) copycat;
                             server.cluster().members().forEach(member ->logger.info(member.toString()));
                         }
                         if ( !exist){
